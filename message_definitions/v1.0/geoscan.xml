@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<mavlink>
+  <!-- Mavlink Geoscan: extension over 'common' MAVLink dialect. -->
+  <!-- https://geoscan.aero/en -->
+  <!-- info@geoscan.aero -->
+  <include>common.xml</include>
+
+  <enums>
+  </enums>
+
+  <messages>
+  </messages>
+</mavlink>
