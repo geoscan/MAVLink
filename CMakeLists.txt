@@ -170,6 +170,7 @@ endmacro()
 
 # build
 set(v1.0Definitions
+    geoscan.xml
     ASLUAV.xml
     ardupilotmega.xml
     common.xml
