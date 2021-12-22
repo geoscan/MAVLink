@@ -1,13 +1,41 @@
 <?xml version="1.0"?>
 <mavlink>
-  <!-- Mavlink Geoscan: extension over 'common' MAVLink dialect. -->
-  <!-- https://geoscan.aero/en -->
-  <!-- info@geoscan.aero -->
-  <include>common.xml</include>
+	<!-- Mavlink Geoscan: extension over 'common' MAVLink dialect. -->
+	<!-- https://geoscan.aero/en -->
+	<!-- info@geoscan.aero -->
+	<include>common.xml</include>
 
-  <enums>
-  </enums>
+	<enums>
+		<enum name="MAV_GS_SOCKET_TRANSPORT">
+			<description>Defines which transport should be used</description>
+			<entry value="0" name="MAV_GS_SOCKET_TRANSPORT_TCP"><description>Use TCP transport</description></entry>
+			<entry value="16" name="MAV_GS_SOCKET_TRANSPORT_UDP"><description>Use UDP transport</description></entry>
+			<entry value="240" name="MAV_GS_SOCKET_TRANSPORT_MASK"><description>A mask applied to uint8_t</description></entry>
+		</enum>
+		<enum name="MAV_GS_SOCKET_COMMAND">
+			<description>Socket command protocol</description>
+			<entry value="0" name="MAV_GS_SOCKET_COMMAND_CONNECT"><description>Connect to a TCP socket</description></entry>
+			<entry value="1" name="MAV_GS_SOCKET_COMMAND_DISCONNECT"><description>Disconnect from a TCP socket</description></entry>
+			<entry value="2" name="MAV_GS_SOCKET_COMMAND_SEND"><description>Send a payload to a target</description></entry>
+			<entry value="3" name="MAV_GS_SOCKET_COMMAND_PROCESS_RECEIVED"><description>Process a data received from a remote client</description></entry>
+			<entry value="15" name="MAV_GS_SOCKET_COMMAND_MASK"><description>A mask applied to uint8_t</description></entry>
+		</enum>
+		<enum name="MAV_GS_SOCKET_ACK">
+			<entry value="0" name="MAV_GS_SOCKET_ACK_SUCCESS"><description>A request has been processed successfully</description></entry>
+			<entry value="1" name="MAV_GS_SOCKET_ACK_FAIL"><description>A request could not be fulfilled due to an unknown reason</description></entry>
+		</enum>
+	</enums>
 
-  <messages>
-  </messages>
+	<messages>
+		<message id="12000" name="MAV_GS_SOCKET">
+			<description>Use socket control facilities provided by a recipient of the message</description>
+			<field type="uint8_t[4]" name="dest_ip4">Target IPv4 address, 0 for undefined</field>
+			<field type="uint16_t" name="dest_port">Target port, network endianness, 0 for undefined</field>
+			<field type="uint16_t" name="src_port">Host port, network endianness, 0 for undefined</field>
+			<field type="uint8_t" name="bitfield_transport_command">Contains info on transport being used (first 4 bits), and command to evaluate (last 4 bits). See *MASK fields of MAV_GS_SOCKET_TRANSPORT and MAV_GS_SOCKET_COMMAND </field>
+			<field type="uint8_t" name="variant_ack_len">Depending on `command`, either MAV_GS_SOCKET_ACK, or length of the `payload` field</field>
+			<field type="uint8_t[245]" name="payload">Payload. Leave zeroed, if not used.</field>
+		</message>
+	</messages>
+
 </mavlink>
