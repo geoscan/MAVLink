@@ -21,6 +21,7 @@
 			<entry value="15" name="MAV_GS_SOCKET_COMMAND_MASK"><description>A mask applied to uint8_t</description></entry>
 		</enum>
 		<enum name="MAV_GS_SOCKET_ACK">
+			<description>Acknowledgement values sent as a response to requests</description>
 			<entry value="0" name="MAV_GS_SOCKET_ACK_SUCCESS"><description>A request has been processed successfully</description></entry>
 			<entry value="1" name="MAV_GS_SOCKET_ACK_FAIL"><description>A request could not be fulfilled due to an unknown reason</description></entry>
 		</enum>
