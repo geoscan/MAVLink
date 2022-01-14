@@ -93,9 +93,7 @@
 				Depending on `transport` (see MAV_GS_NETWORK_TRANSPORT enum) and
 				`command` (see MAV_GSN_NETWORK_COMMAND enum) fields, first 0, 4,
 				or 16 bytes of `payload` may define no IP address, IPv4, or IPv6
-				address. The address (if its presence is implied by the context
-				defined upon the aforementioned fields) must be stored in TCP/IP
-				network byte order, i.e. big-endian.
+				address.
 			</field>
 		</message>
 	</messages>
