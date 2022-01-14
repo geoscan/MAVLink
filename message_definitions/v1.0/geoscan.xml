@@ -7,36 +7,89 @@
 
 	<enums>
 		<enum name="MAV_GS_NETWORK_TRANSPORT">
-			<description>Defines which transport should be used</description>
-			<entry value="0" name="MAV_GS_NETWORK_TRANSPORT_TCP"><description>Use TCP transport</description></entry>
-			<entry value="1" name="MAV_GS_NETWORK_TRANSPORT_UDP"><description>Use UDP transport</description></entry>
+			<description>Defines which transport should be used.</description>
+			<entry value="0" name="MAV_GS_NETWORK_TRANSPORT_TCP4">
+				<description>Use IPv4 TCP transport.</description>
+			</entry>
+			<entry value="1" name="MAV_GS_NETWORK_TRANSPORT_UDP4">
+				<description>Use IPv4 UDP transport.</description>
+			</entry>
+			<entry value="2" name="MAV_GS_NETWORK_TRANSPORT_TCP6">
+				<description>Use IPv6 TCP transport.</description>
+			</entry>
+			<entry value="3" name="MAV_GS_NETWORK_TRANSPORT_UDP6">
+				<description>Use IPv6 UDP transport.</description>
+			</entry>
 		</enum>
 		<enum name="MAV_GS_NETWORK_COMMAND">
-			<description>Socket command protocol</description>
-			<entry value="0" name="MAV_GS_NETWORK_COMMAND_CONNECT"><description>Connect to a TCP socket</description></entry>
-			<entry value="1" name="MAV_GS_NETWORK_COMMAND_DISCONNECT"><description>Disconnect from a TCP socket</description></entry>
-			<entry value="2" name="MAV_GS_NETWORK_COMMAND_SEND"><description>Send a payload to a target</description></entry>
-			<entry value="3" name="MAV_GS_NETWORK_COMMAND_PROCESS_RECEIVED"><description>Process a data received from a remote client</description></entry>
+			<description>Socket command protocol.</description>
+			<entry value="0" name="MAV_GS_NETWORK_COMMAND_PROCESS_RECEIVED">
+				<description>Process a data received from a remote client. Uses `src_port` and `ip` to identify a remote point.</description>
+			</entry>
+			<entry value="1" name="MAV_GS_NETWORK_COMMAND_CONNECT">
+				<description>Connect to a TCP socket. Uses `src_port`, `dest_port`, and `ip`. An implementation may use arbitrary port. In this case, if a sender expects such implementation, `src_port` should be set 0.</description>
+			</entry>
+			<entry value="2" name="MAV_GS_NETWORK_COMMAND_DISCONNECT">
+				<description>Disconnect from a given endpoint. Uses `src_port`, `dest_port`, and `ip`.</description>
+			</entry>
+			<entry value="3" name="MAV_GS_NETWORK_COMMAND_SEND">
+				<description>Send a payload to a target. Uses `src_port`, `dest_port`, and `ip`. In case of UDP transport, an implementation may use arbitrary port. In this case, if a sender expects such implementation, `src_port` should be set 0.</description>
+			</entry>
+			<entry value="4" name="MAV_GS_NETWORK_COMMAND_OPEN">
+				<description>Open a TCP or UDP socket on a given port. Uses `src_port`.</description>
+			</entry>
+			<entry value="5" name="MAV_GS_NETWORK_COMMAND_CLOSE">
+				<description>Close a TCP or UDP socket on a given port. Uses `src_port`.</description>
+			</entry>
 		</enum>
 		<enum name="MAV_GS_NETWORK_ACK">
-			<description>Acknowledgement values sent as a response to requests</description>
-			<entry value="0" name="MAV_GS_NETWORK_ACK_NONE"><description>Not a response message</description></entry>
-			<entry value="2" name="MAV_GS_NETWORK_ACK_SUCCESS"><description>A request has been processed successfully</description></entry>
-			<entry value="3" name="MAV_GS_NETWORK_ACK_FAIL"><description>A request could not be fulfilled due to an unknown reason</description></entry>
+			<description>
+				Acknowledgement values. Either serve as response codes, or mark
+				messages as requests.
+			</description>
+			<entry value="0" name="MAV_GS_NETWORK_ACK_NONE_HOLD_RESPONSE">
+				<description>Request message. A response is expected.</description>
+			</entry>
+			<entry value="1" name="MAV_GS_NETWORK_ACK_NONE">
+				<description>
+					Request message. A response is not required. Also serves as
+					a bound, i.e. all the values w/ MAV_GS_NETWORK_ACK value
+					lower than this one should be considered request messages.
+				</description>
+			</entry>
+			<entry value="254" name="MAV_GS_NETWORK_ACK_FAIL">
+				<description>A request could not be fulfilled.</description>
+			</entry>
+			<entry value="253" name="MAV_GS_NETWORK_ACK_SUCCESS">
+				<description>A request has been processed successfully</description>
+			</entry>
 		</enum>
 	</enums>
 
 	<messages>
 		<message id="12000" name="MAV_GS_NETWORK">
-			<description>Use socket control facilities provided by a recipient of the message</description>
+			<description>
+				Use socket control facilities provided by a recipient of the
+				message. This message uses a number of redundant fields, so
+				depending on MAV_GS_NETWORK_COMMAND, some of them may be
+				ignored. The same message is used as both request and response.
+				Whether or not a receiver should form and send a response
+				message is defined by `ack` field (see MAV_GS_NETWORK_ACK
+				fields). For info on fields interpretation, please refer to
+				MAV_GS_NETWORK_COMMAND enum.
+			</description>
 			<field type="uint8_t[4]" name="dest_ip4">Target IPv4 address, 0 for undefined</field>
 			<field type="uint16_t" name="dest_port">Target port, network endianness, 0 for undefined</field>
-			<field type="uint16_t" name="src_port">Host port, network endianness, 0 for undefined</field>
+			<field type="uint16_t" name="src_port">Host port, network endianness, 0 for auto port association. If 0, and a response is expected, the response must have this field explicitly defined.</field>
 			<field type="uint8_t" name="transport" enum="MAV_GS_NETWORK_TRANSPORT">A transport being used for message transmission</field>
 			<field type="uint8_t" name="command" enum="MAV_GS_NETWORK_COMMAND">Enum value denoting a particular command</field>
 			<field type="uint8_t" name="ack" enum="MAV_GS_NETWORK_ACK">Acknowledgement message sent in response to a request</field>
 			<field type="uint8_t" name="length">Length of the payload</field>
-			<field type="uint8_t[243]" name="payload"></field>
+			<field type="uint8_t[243]" name="payload">
+				For MAV_GSN_NETWORK_ACK_FAIL ack messages, it is acceptable to
+				use this field to pass human-readable description of the
+				problem.
+			</field>
 		</message>
 	</messages>
 
