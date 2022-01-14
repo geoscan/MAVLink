@@ -27,13 +27,13 @@
 				<description>Process a data received from a remote client. Uses `src_port` and `ip` (`payload`) to identify a remote point.</description>
 			</entry>
 			<entry value="1" name="MAV_GS_NETWORK_COMMAND_CONNECT">
-				<description>Connect to a TCP socket. Uses `src_port`, `dest_port`, and `ip` (`payload`). An implementation may use arbitrary port. In this case, if a sender expects such implementation, `src_port` should be set 0.</description>
+				<description>Connect to a TCP socket. Uses `src_port`, `dest_port`, and `ip` (`payload`). An implementation may use an arbitrary port. In this case, if a sender expects such implementation, `src_port` should be set 0.</description>
 			</entry>
 			<entry value="2" name="MAV_GS_NETWORK_COMMAND_DISCONNECT">
 				<description>Disconnect from a given endpoint. Uses `src_port`, `dest_port`, and `ip` (`payload`).</description>
 			</entry>
 			<entry value="3" name="MAV_GS_NETWORK_COMMAND_SEND">
-				<description>Send a payload to a target. Uses `src_port`, `dest_port`, and `ip` (`payload`). In case of UDP transport, an implementation may use arbitrary port. In this case, if a sender expects such implementation, `src_port` should be set 0.</description>
+				<description>Send a payload to a target. Uses `src_port`, `dest_port`, and `ip` (`payload`). In case of UDP transport, an implementation may use an arbitrary port. In this case, if a sender expects such implementation, `src_port` should be set 0.</description>
 			</entry>
 			<entry value="4" name="MAV_GS_NETWORK_COMMAND_OPEN">
 				<description>Open a TCP or UDP socket on a given port. Uses `src_port`.</description>
