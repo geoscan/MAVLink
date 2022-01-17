@@ -24,22 +24,22 @@
 		<enum name="MAV_GS_NETWORK_COMMAND">
 			<description>Socket command protocol.</description>
 			<entry value="0" name="MAV_GS_NETWORK_COMMAND_PROCESS_RECEIVED">
-				<description>Process a data received from a remote client. Uses `src_port` and `ip` (`payload`) to identify a remote point.</description>
-			</entry>
+				<description>Process a data received from a remote client. Uses `remote_port` and `ip` (`payload`) to identify a remote point, and 'host_port`.</description>
+			</entry>j
 			<entry value="1" name="MAV_GS_NETWORK_COMMAND_CONNECT">
-				<description>Connect to a TCP socket. Uses `src_port`, `dest_port`, and `ip` (`payload`). An implementation may use an arbitrary port. In this case, if a sender expects such implementation, `src_port` should be set 0.</description>
+				<description>Connect to a TCP socket. Uses `host_port`, `remote_port`, and `ip` (`payload`). An implementation may use an arbitrary port. In this case, if a sender expects such implementation, `host_port` should be set 0.</description>
 			</entry>
 			<entry value="2" name="MAV_GS_NETWORK_COMMAND_DISCONNECT">
-				<description>Disconnect from a given endpoint. Uses `src_port`, `dest_port`, and `ip` (`payload`).</description>
+				<description>Disconnect from a given endpoint. Uses `host_port`, `remote_port`, and `ip` (`payload`).</description>
 			</entry>
 			<entry value="3" name="MAV_GS_NETWORK_COMMAND_SEND">
-				<description>Send a payload to a target. Uses `src_port`, `dest_port`, and `ip` (`payload`). In case of UDP transport, an implementation may use an arbitrary port. In this case, if a sender expects such implementation, `src_port` should be set 0.</description>
+				<description>Send a payload to a target. Uses `host_port`, `remote_port`, and `ip` (`payload`). In case of UDP transport, an implementation may use an arbitrary port. In this case, if a sender expects such implementation, `host_port` should be set 0.</description>
 			</entry>
 			<entry value="4" name="MAV_GS_NETWORK_COMMAND_OPEN">
-				<description>Open a TCP or UDP socket on a given port. Uses `src_port`.</description>
+				<description>Open a TCP or UDP socket on a given port. Uses `host_port`.</description>
 			</entry>
 			<entry value="5" name="MAV_GS_NETWORK_COMMAND_CLOSE">
-				<description>Close a TCP or UDP socket on a given port. Uses `src_port`.</description>
+				<description>Close a TCP or UDP socket on a given port. Uses `host_port`.</description>
 			</entry>
 		</enum>
 		<enum name="MAV_GS_NETWORK_ACK">
@@ -48,19 +48,19 @@
 				messages as requests.
 			</description>
 			<entry value="0" name="MAV_GS_NETWORK_ACK_NONE_HOLD_RESPONSE">
-				<description>Request message. A response is expected.</description>
+				<description>Request message. A response is not required.</description>
 			</entry>
 			<entry value="1" name="MAV_GS_NETWORK_ACK_NONE">
 				<description>
-					Request message. A response is not required. Also serves as
+					Request message. A response is expected. Also serves as
 					a bound, i.e. all the values w/ MAV_GS_NETWORK_ACK value
 					lower than this one should be considered request messages.
 				</description>
 			</entry>
-			<entry value="254" name="MAV_GS_NETWORK_ACK_FAIL">
+			<entry value="253" name="MAV_GS_NETWORK_ACK_FAIL">
 				<description>A request could not be fulfilled.</description>
 			</entry>
-			<entry value="253" name="MAV_GS_NETWORK_ACK_SUCCESS">
+			<entry value="254" name="MAV_GS_NETWORK_ACK_SUCCESS">
 				<description>A request has been processed successfully</description>
 			</entry>
 		</enum>
@@ -78,12 +78,12 @@
 				fields). For info on fields interpretation, please refer to
 				MAV_GS_NETWORK_COMMAND enum.
 			</description>
-			<field type="uint16_t" name="dest_port">Target port, network endianness, 0 for undefined</field>
-			<field type="uint16_t" name="src_port">Host port, network endianness, 0 for auto port association. If 0, and a response is expected, the response must have this field explicitly defined.</field>
-			<field type="uint8_t" name="transport" enum="MAV_GS_NETWORK_TRANSPORT">A transport being used for message transmission</field>
 			<field type="uint8_t" name="command" enum="MAV_GS_NETWORK_COMMAND">Enum value denoting a particular command</field>
 			<field type="uint8_t" name="ack" enum="MAV_GS_NETWORK_ACK">Acknowledgement message sent in response to a request</field>
-			<field type="uint8_t" name="length">Length of the payload, excluding IP address.</field>
+			<field type="uint8_t" name="transport" enum="MAV_GS_NETWORK_TRANSPORT">A transport being used for message transmission</field>
+			<field type="uint16_t" name="host_port">Target port, network endianness, 0 for undefined</field>
+			<field type="uint16_t" name="remote_port">Host port, network endianness, 0 for auto port association. If 0, and a response is expected, the response must have this field explicitly defined.</field>
+			<field type="uint8_t" name="payload_len">Length of the payload, including IP address.</field>
 			<field type="uint8_t[247]" name="payload">
 				For MAV_GSN_NETWORK_ACK_FAIL ack messages, it is acceptable to
 				use this field to store description of the problem. The format
