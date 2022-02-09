@@ -24,8 +24,8 @@
 		<enum name="MAV_GS_NETWORK_COMMAND">
 			<description>Socket command protocol.</description>
 			<entry value="0" name="MAV_GS_NETWORK_COMMAND_PROCESS_RECEIVED">
-				<description>Process a data received from a remote client. Uses `remote_port` and `ip` (`payload`) to identify a remote point, and 'host_port`.</description>
-			</entry>j
+				<description>Process a data received from a remote client. Uses `remote_port` and `ip` (`payload`) to identify a remote point, and `host_port`.</description>
+			</entry>
 			<entry value="1" name="MAV_GS_NETWORK_COMMAND_CONNECT">
 				<description>Connect to a TCP socket. Uses `host_port`, `remote_port`, and `ip` (`payload`). An implementation may use an arbitrary port. In this case, if a sender expects such implementation, `host_port` should be set 0.</description>
 			</entry>
