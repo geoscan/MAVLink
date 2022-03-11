@@ -22,7 +22,17 @@
 			</entry>
 		</enum>
 		<enum name="MAV_GS_NETWORK_COMMAND">
-			<description>Socket command protocol.</description>
+			<description>
+				Socket command protocol. Various commands may or may not use
+				`remote_port`, `ip` (payload), or `host_port` fields, so each
+				command description states explicitly which of those fields are
+				used. Please note the way `payload` field is referred to.
+
+				Because IP address' length may vary between IP versions, it's
+				been decided to use `payload` field to encode both IP address
+				and the message's payload itself. See `payload` field
+				description of MAV_GS_NETWORK message for more info.
+			</description>
 			<entry value="0" name="MAV_GS_NETWORK_COMMAND_PROCESS_RECEIVED">
 				<description>Process a data received from a remote client. Uses `remote_port` and `ip` (`payload`) to identify a remote point, and `host_port`.</description>
 			</entry>
@@ -40,6 +50,12 @@
 			</entry>
 			<entry value="5" name="MAV_GS_NETWORK_COMMAND_CLOSE">
 				<description>Close a TCP or UDP socket on a given port. Uses `host_port`.</description>
+			</entry>
+			<entry value="6" name="MAV_GS_NETWORK_COMMAND_PROCESS_CONNECTED">
+				<description>A client has connected to an opened TCP port. Uses `host_port`, `remote_port`, and `ip` (payload) fields.</description>
+			</entry>
+			<entry value="7" name="MAV_GS_NETWORK_COMMAND_PROCESS_CONNECTION_ABORTED">
+				<description>A TCP connection has been aborted by a connected peer, or due to some network error. Uses `host_port`, `remote_port`, and `ip` (payload) fields. A problem description may be encoded into `payload` field.</description>
 			</entry>
 		</enum>
 		<enum name="MAV_GS_NETWORK_ACK">
@@ -61,7 +77,12 @@
 				<description>A request could not be fulfilled.</description>
 			</entry>
 			<entry value="254" name="MAV_GS_NETWORK_ACK_SUCCESS">
-				<description>A request has been processed successfully</description>
+				<description>
+					A request has been processed successfully. IMPORTANT: if the
+					receiver's target state already matches the requested one
+					(i.e. a client asks to open an already opened socket), the
+					receiver must return MAV_GS_NETWORK_ACK_SUCCESS too.
+				</description>
 			</entry>
 		</enum>
 	</enums>
